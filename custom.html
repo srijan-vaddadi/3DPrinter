@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Order - Print3D</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M16 2L2 10v12l14 8 14-8V10L16 2z" fill="#00cec9" opacity="0.3"/><path d="M16 2L2 10l14 8 14-8L16 2z" fill="#6c5ce7"/><path d="M16 18L2 10v12l14 8V18z" fill="#00cec9"/><path d="M16 18l14-8v12l-14 8V18z" fill="#a29bfe"/></svg>
+        Print<span>3D</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="browse.html">Browse</a>
+        <a href="custom.html" class="active">Custom Order</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="signin.html">Sign In</a>
+        <a href="cart.html">🛒 <span class="cart-count">2</span></a>
+      </div>
+      <button class="mobile-toggle">☰</button>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1>Custom Order</h1>
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> <span>/</span> <span>Custom Order</span>
+    </div>
+  </div>
+
+  <!-- Custom Order Section -->
+  <section class="section">
+    <div class="container">
+      <div class="product-detail-grid">
+        <!-- Upload & Preview -->
+        <div>
+          <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📤</div>
+            <h3>Upload Your 3D Model</h3>
+            <p>Drag & drop your file here, or <span class="browse-link">browse files</span></p>
+            <p style="margin-top: 12px; font-size: 0.8rem; color: var(--gray);">Supported: .STL, .OBJ, .3MF, .STEP (Max 100MB)</p>
+          </div>
+
+          <!-- Preview -->
+          <div class="preview-box" style="margin-top: 24px;">
+            <div class="preview-model">📦</div>
+            <div class="preview-controls">
+              <button title="Rotate Left">↺</button>
+              <button title="Zoom In">+</button>
+              <button title="Zoom Out">−</button>
+              <button title="Reset View">⟲</button>
+            </div>
+          </div>
+          <p style="text-align: center; color: var(--gray); font-size: 0.85rem; margin-top: 12px;">
+            3D preview will appear after upload
+          </p>
+        </div>
+
+        <!-- Custom Options -->
+        <div>
+          <div class="personalise-section" style="margin-top: 0;">
+            <h2>Configure Your Print</h2>
+
+            <!-- Project Name -->
+            <div class="form-group">
+              <label>Project Name</label>
+              <input type="text" class="form-control" placeholder="e.g. My Custom Vase">
+            </div>
+
+            <!-- Material -->
+            <div class="form-group">
+              <label>Material</label>
+              <div class="material-options">
+                <div class="material-option selected" data-extra="0">
+                  <div class="material-name">PLA Standard</div>
+                  <div class="material-price">$0.12/cm³</div>
+                </div>
+                <div class="material-option" data-extra="0">
+                  <div class="material-name">PETG Premium</div>
+                  <div class="material-price">$0.18/cm³</div>
+                </div>
+                <div class="material-option" data-extra="0">
+                  <div class="material-name">Resin HD</div>
+                  <div class="material-price">$0.25/cm³</div>
+                </div>
+                <div class="material-option" data-extra="0">
+                  <div class="material-name">Nylon Pro</div>
+                  <div class="material-price">$0.35/cm³</div>
+                </div>
+                <div class="material-option" data-extra="0">
+                  <div class="material-name">ABS Industrial</div>
+                  <div class="material-price">$0.15/cm³</div>
+                </div>
+                <div class="material-option" data-extra="0">
+                  <div class="material-name">TPU Flexible</div>
+                  <div class="material-price">$0.22/cm³</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Colour -->
+            <div class="form-group">
+              <label>Colour</label>
+              <div class="color-options">
+                <div class="color-option selected" style="background: #2d3436;" title="Black"></div>
+                <div class="color-option" style="background: #dfe6e9;" title="White"></div>
+                <div class="color-option" style="background: #e74c3c;" title="Red"></div>
+                <div class="color-option" style="background: #0984e3;" title="Blue"></div>
+                <div class="color-option" style="background: #00b894;" title="Green"></div>
+                <div class="color-option" style="background: #fdcb6e;" title="Yellow"></div>
+                <div class="color-option" style="background: #6c5ce7;" title="Purple"></div>
+                <div class="color-option" style="background: #e17055;" title="Orange"></div>
+              </div>
+            </div>
+
+            <!-- Print Quality -->
+            <div class="form-group">
+              <label>Print Quality</label>
+              <div class="size-options">
+                <div class="size-option">Draft (0.3mm)</div>
+                <div class="size-option selected">Standard (0.2mm)</div>
+                <div class="size-option">High (0.1mm)</div>
+                <div class="size-option">Ultra (0.05mm)</div>
+              </div>
+              <div class="hint">Higher quality = finer detail but longer print time.</div>
+            </div>
+
+            <!-- Scale -->
+            <div class="form-group">
+              <label>Scale</label>
+              <div class="form-row">
+                <select class="form-control">
+                  <option>100% (Original)</option>
+                  <option>50%</option>
+                  <option>75%</option>
+                  <option>125%</option>
+                  <option>150%</option>
+                  <option>200%</option>
+                  <option>Custom</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Infill -->
+            <div class="form-group">
+              <label>Infill Density</label>
+              <div class="size-options">
+                <div class="size-option">10% Hollow</div>
+                <div class="size-option selected">20% Standard</div>
+                <div class="size-option">50% Strong</div>
+                <div class="size-option">100% Solid</div>
+              </div>
+              <div class="hint">Higher infill = stronger but heavier and more expensive.</div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="form-group">
+              <label>Quantity</label>
+              <div class="quantity-control">
+                <button class="qty-minus">−</button>
+                <input type="number" value="1" min="1" max="99">
+                <button class="qty-plus">+</button>
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-group">
+              <label>Additional Notes</label>
+              <textarea class="form-control" placeholder="Any special requirements, finishing preferences, or questions..."></textarea>
+            </div>
+
+            <!-- Estimate -->
+            <div class="price-summary">
+              <div class="price-row">
+                <span>Estimated Volume</span>
+                <span>— cm³</span>
+              </div>
+              <div class="price-row">
+                <span>Material Cost</span>
+                <span>—</span>
+              </div>
+              <div class="price-row">
+                <span>Print Time</span>
+                <span>—</span>
+              </div>
+              <div class="price-row total">
+                <span>Estimated Total</span>
+                <span class="price-val">Upload to calculate</span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+              <button class="btn btn-accent btn-lg" style="flex: 1;">Get Quote</button>
+              <a href="cart.html" class="btn btn-primary btn-lg" style="flex: 1;">Add to Cart</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Info Section -->
+  <section class="section" style="background: var(--white);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Custom Print Guidelines</h2>
+        <p>Follow these tips for the best results with your custom 3D print.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-icon">📐</div>
+          <h3>Check Dimensions</h3>
+          <p>Ensure your model is watertight and properly scaled before uploading.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-icon">🔧</div>
+          <h3>Wall Thickness</h3>
+          <p>Minimum 1.5mm wall thickness recommended for structural integrity.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-icon">🎯</div>
+          <h3>Detail Level</h3>
+          <p>Fine details under 0.5mm may not print clearly. Choose quality accordingly.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-icon">💬</div>
+          <h3>Need Help?</h3>
+          <p>Our team reviews every file and will contact you if adjustments are needed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">Print<span>3D</span></div>
+          <p>Premium custom 3D printing service.</p>
+        </div>
+        <div>
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="browse.html">All Models</a></li>
+            <li><a href="custom.html">Custom Order</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Centre</a></li>
+            <li><a href="#">Shipping</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Print3D. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

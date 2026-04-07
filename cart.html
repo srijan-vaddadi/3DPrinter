@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - Print3D</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M16 2L2 10v12l14 8 14-8V10L16 2z" fill="#00cec9" opacity="0.3"/><path d="M16 2L2 10l14 8 14-8L16 2z" fill="#6c5ce7"/><path d="M16 18L2 10v12l14 8V18z" fill="#00cec9"/><path d="M16 18l14-8v12l-14 8V18z" fill="#a29bfe"/></svg>
+        Print<span>3D</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="browse.html">Browse</a>
+        <a href="custom.html">Custom Order</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="signin.html">Sign In</a>
+        <a href="cart.html">🛒 <span class="cart-count">2</span></a>
+      </div>
+      <button class="mobile-toggle">☰</button>
+    </div>
+  </nav>
+
+  <!-- Cart -->
+  <section class="section cart-page">
+    <div class="container">
+      <h1 style="font-size: 2rem; margin-bottom: 32px;">Shopping Cart</h1>
+
+      <div class="cart-layout">
+        <!-- Cart Items -->
+        <div>
+          <div class="cart-item">
+            <div class="cart-item-image" style="background: linear-gradient(135deg, rgba(162,155,254,0.3), rgba(108,92,231,0.3));">🐉</div>
+            <div class="cart-item-info">
+              <h3>Dragon Guardian Figurine</h3>
+              <div class="cart-item-meta">
+                Colour: Royal Purple &middot; Size: Medium (15cm) &middot; Material: PLA Standard<br>
+                Engraving: "To my brave knight — Dad"
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div class="quantity-control" style="border-width: 1px;">
+                  <button class="qty-minus">−</button>
+                  <input type="number" value="1" min="1" max="99" style="width: 40px;">
+                  <button class="qty-plus">+</button>
+                </div>
+                <div class="cart-item-price">$34.99</div>
+              </div>
+            </div>
+            <button class="cart-item-remove">✕</button>
+          </div>
+
+          <div class="cart-item">
+            <div class="cart-item-image" style="background: linear-gradient(135deg, rgba(85,239,196,0.3), rgba(0,184,148,0.3));">🌿</div>
+            <div class="cart-item-info">
+              <h3>Geometric Plant Pot</h3>
+              <div class="cart-item-meta">
+                Colour: Emerald Green &middot; Size: Large (22cm) &middot; Material: PETG Premium
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div class="quantity-control" style="border-width: 1px;">
+                  <button class="qty-minus">−</button>
+                  <input type="number" value="2" min="1" max="99" style="width: 40px;">
+                  <button class="qty-plus">+</button>
+                </div>
+                <div class="cart-item-price">$83.97</div>
+              </div>
+            </div>
+            <button class="cart-item-remove">✕</button>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <a href="browse.html" style="color: var(--primary); font-weight: 600; font-size: 0.95rem;">← Continue Shopping</a>
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="cart-summary">
+          <h3>Order Summary</h3>
+          <div class="price-row">
+            <span>Subtotal (3 items)</span>
+            <span>$118.96</span>
+          </div>
+          <div class="price-row">
+            <span>Shipping</span>
+            <span>$9.99</span>
+          </div>
+          <div class="price-row">
+            <span>Tax</span>
+            <span>$11.90</span>
+          </div>
+          <div class="price-row total">
+            <span>Total</span>
+            <span class="price-val">$140.85</span>
+          </div>
+
+          <div class="promo-input">
+            <input type="text" class="form-control" placeholder="Promo code">
+            <button class="btn btn-outline btn-sm">Apply</button>
+          </div>
+
+          <a href="checkout.html" class="btn btn-accent btn-block btn-lg mt-4">Proceed to Checkout</a>
+
+          <div style="margin-top: 20px; text-align: center; font-size: 0.8rem; color: var(--gray);">
+            🔒 Secure checkout &middot; Free returns within 30 days
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Print3D. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

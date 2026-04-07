@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Print3D</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M16 2L2 10v12l14 8 14-8V10L16 2z" fill="#00cec9" opacity="0.3"/><path d="M16 2L2 10l14 8 14-8L16 2z" fill="#6c5ce7"/><path d="M16 18L2 10v12l14 8V18z" fill="#00cec9"/><path d="M16 18l14-8v12l-14 8V18z" fill="#a29bfe"/></svg>
+        Print<span>3D</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="browse.html">Browse</a>
+        <a href="custom.html">Custom Order</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="signin.html">Sign In</a>
+        <a href="cart.html">🛒 <span class="cart-count">2</span></a>
+      </div>
+      <button class="mobile-toggle">☰</button>
+    </div>
+  </nav>
+
+  <!-- Checkout -->
+  <section class="section checkout-page">
+    <div class="container">
+      <!-- Steps -->
+      <div class="checkout-steps">
+        <div class="checkout-step completed">
+          <span class="step-num">✓</span> Cart
+        </div>
+        <div class="step-connector completed"></div>
+        <div class="checkout-step active">
+          <span class="step-num">2</span> Details
+        </div>
+        <div class="step-connector"></div>
+        <div class="checkout-step">
+          <span class="step-num">3</span> Payment
+        </div>
+        <div class="step-connector"></div>
+        <div class="checkout-step">
+          <span class="step-num">4</span> Confirm
+        </div>
+      </div>
+
+      <div class="checkout-layout">
+        <!-- Forms -->
+        <div>
+          <!-- Contact -->
+          <div class="checkout-section">
+            <h3>Contact Information</h3>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" class="form-control" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" class="form-control" placeholder="+1 (555) 123-4567">
+            </div>
+          </div>
+
+          <!-- Shipping -->
+          <div class="checkout-section">
+            <h3>Shipping Address</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>First Name</label>
+                <input type="text" class="form-control" placeholder="John">
+              </div>
+              <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" class="form-control" placeholder="Doe">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Address</label>
+              <input type="text" class="form-control" placeholder="123 Main Street">
+            </div>
+            <div class="form-group">
+              <label>Apartment, suite, etc. (optional)</label>
+              <input type="text" class="form-control" placeholder="Apt 4B">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>City</label>
+                <input type="text" class="form-control" placeholder="New York">
+              </div>
+              <div class="form-group">
+                <label>State / Province</label>
+                <input type="text" class="form-control" placeholder="NY">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>ZIP / Postal Code</label>
+                <input type="text" class="form-control" placeholder="10001">
+              </div>
+              <div class="form-group">
+                <label>Country</label>
+                <select class="form-control">
+                  <option>United States</option>
+                  <option>United Kingdom</option>
+                  <option>Canada</option>
+                  <option>Australia</option>
+                  <option>Germany</option>
+                  <option>France</option>
+                  <option>Japan</option>
+                  <option>India</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment -->
+          <div class="checkout-section">
+            <h3>Payment Method</h3>
+            <div class="payment-methods">
+              <div class="payment-method selected">💳 Credit Card</div>
+              <div class="payment-method">🅿️ PayPal</div>
+              <div class="payment-method">🍎 Apple Pay</div>
+            </div>
+            <div class="form-group">
+              <label>Card Number</label>
+              <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Expiry Date</label>
+                <input type="text" class="form-control" placeholder="MM / YY">
+              </div>
+              <div class="form-group">
+                <label>CVV</label>
+                <input type="text" class="form-control" placeholder="123">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Name on Card</label>
+              <input type="text" class="form-control" placeholder="John Doe">
+            </div>
+          </div>
+
+          <a href="confirmation.html" class="btn btn-accent btn-lg btn-block">Place Order — $140.85</a>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div>
+          <div class="cart-summary">
+            <h3>Order Summary</h3>
+
+            <div style="display: flex; gap: 12px; padding: 16px 0; border-bottom: 1px solid #eee;">
+              <div style="width: 60px; height: 60px; border-radius: 8px; background: linear-gradient(135deg, rgba(162,155,254,0.3), rgba(108,92,231,0.3)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🐉</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; font-size: 0.9rem;">Dragon Guardian Figurine</div>
+                <div style="font-size: 0.8rem; color: var(--gray);">Purple &middot; Medium &middot; PLA</div>
+                <div style="font-size: 0.8rem; color: var(--gray);">Qty: 1</div>
+              </div>
+              <div style="font-weight: 700;">$34.99</div>
+            </div>
+
+            <div style="display: flex; gap: 12px; padding: 16px 0; border-bottom: 1px solid #eee;">
+              <div style="width: 60px; height: 60px; border-radius: 8px; background: linear-gradient(135deg, rgba(85,239,196,0.3), rgba(0,184,148,0.3)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🌿</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; font-size: 0.9rem;">Geometric Plant Pot</div>
+                <div style="font-size: 0.8rem; color: var(--gray);">Green &middot; Large &middot; PETG</div>
+                <div style="font-size: 0.8rem; color: var(--gray);">Qty: 2</div>
+              </div>
+              <div style="font-weight: 700;">$83.97</div>
+            </div>
+
+            <div style="margin-top: 16px;">
+              <div class="price-row">
+                <span>Subtotal</span><span>$118.96</span>
+              </div>
+              <div class="price-row">
+                <span>Shipping</span><span>$9.99</span>
+              </div>
+              <div class="price-row">
+                <span>Tax</span><span>$11.90</span>
+              </div>
+              <div class="price-row total">
+                <span>Total</span><span class="price-val">$140.85</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Print3D. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

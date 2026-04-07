@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed - Print3D</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M16 2L2 10v12l14 8 14-8V10L16 2z" fill="#00cec9" opacity="0.3"/><path d="M16 2L2 10l14 8 14-8L16 2z" fill="#6c5ce7"/><path d="M16 18L2 10v12l14 8V18z" fill="#00cec9"/><path d="M16 18l14-8v12l-14 8V18z" fill="#a29bfe"/></svg>
+        Print<span>3D</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="browse.html">Browse</a>
+        <a href="custom.html">Custom Order</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="signin.html">Sign In</a>
+        <a href="cart.html">🛒 <span class="cart-count">0</span></a>
+      </div>
+      <button class="mobile-toggle">☰</button>
+    </div>
+  </nav>
+
+  <!-- Confirmation -->
+  <section class="section confirmation-page">
+    <div class="confirmation-card">
+      <div class="confirmation-icon">✓</div>
+      <h1>Order Confirmed!</h1>
+      <div class="order-number">Order #P3D-2026-04078</div>
+      <p>Thank you for your order! We've received your personalisation details and your model is being prepared for printing. You'll receive an email confirmation shortly.</p>
+
+      <div class="confirmation-details">
+        <div class="detail-row">
+          <span>Estimated Print Time</span>
+          <span style="font-weight: 600;">3-5 business days</span>
+        </div>
+        <div class="detail-row">
+          <span>Estimated Delivery</span>
+          <span style="font-weight: 600;">April 15-18, 2026</span>
+        </div>
+        <div class="detail-row">
+          <span>Shipping Method</span>
+          <span style="font-weight: 600;">Standard Tracked</span>
+        </div>
+        <div class="detail-row">
+          <span>Items</span>
+          <span style="font-weight: 600;">3 items</span>
+        </div>
+        <div class="detail-row" style="border-top: 1px solid #ddd; margin-top: 8px; padding-top: 12px;">
+          <span style="font-weight: 700; color: var(--dark);">Total Charged</span>
+          <span style="font-weight: 800; color: var(--primary); font-size: 1.1rem;">$140.85</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+        <a href="#" class="btn btn-outline">Track Order</a>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

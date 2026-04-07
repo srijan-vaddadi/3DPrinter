@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dragon Guardian Figurine - Print3D</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M16 2L2 10v12l14 8 14-8V10L16 2z" fill="#00cec9" opacity="0.3"/><path d="M16 2L2 10l14 8 14-8L16 2z" fill="#6c5ce7"/><path d="M16 18L2 10v12l14 8V18z" fill="#00cec9"/><path d="M16 18l14-8v12l-14 8V18z" fill="#a29bfe"/></svg>
+        Print<span>3D</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="browse.html" class="active">Browse</a>
+        <a href="custom.html">Custom Order</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="nav-actions">
+        <a href="signin.html">Sign In</a>
+        <a href="cart.html">🛒 <span class="cart-count">2</span></a>
+      </div>
+      <button class="mobile-toggle">☰</button>
+    </div>
+  </nav>
+
+  <!-- Product Detail -->
+  <section class="section product-detail">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <div style="margin-bottom: 32px;">
+        <div class="breadcrumb" style="justify-content: flex-start; color: var(--gray); font-size: 0.9rem;">
+          <a href="index.html" style="color: var(--primary);">Home</a>
+          <span>/</span>
+          <a href="browse.html" style="color: var(--primary);">Browse</a>
+          <span>/</span>
+          <span>Dragon Guardian Figurine</span>
+        </div>
+      </div>
+
+      <div class="product-detail-grid">
+        <!-- Gallery -->
+        <div>
+          <div class="product-gallery" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7);">
+            🐉
+          </div>
+          <div class="product-gallery-thumbs">
+            <div class="thumb active" style="background: linear-gradient(135deg, rgba(162,155,254,0.3), rgba(108,92,231,0.3));">🐉</div>
+            <div class="thumb" style="background: linear-gradient(135deg, rgba(162,155,254,0.3), rgba(108,92,231,0.3));">🔍</div>
+            <div class="thumb" style="background: linear-gradient(135deg, rgba(162,155,254,0.3), rgba(108,92,231,0.3));">📐</div>
+            <div class="thumb" style="background: linear-gradient(135deg, rgba(162,155,254,0.3), rgba(108,92,231,0.3));">📦</div>
+          </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+          <h1>Dragon Guardian Figurine</h1>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span>4.9 (128 reviews)</span>
+          </div>
+          <div class="product-price" id="basePrice" data-price="34.99">$34.99</div>
+          <p class="product-desc">
+            A majestic dragon figurine standing guard over your desk or shelf. This highly detailed model features intricate scales, powerful wings, and a dynamic pose. Each piece is precision-printed and hand-finished for museum-quality detail.
+          </p>
+
+          <!-- Personalisation Section -->
+          <div class="personalise-section">
+            <h2>Personalise Your Model</h2>
+
+            <!-- Colour -->
+            <div class="form-group">
+              <label>Colour</label>
+              <div class="color-options">
+                <div class="color-option selected" style="background: #6c5ce7;" title="Royal Purple"></div>
+                <div class="color-option" style="background: #e74c3c;" title="Fire Red"></div>
+                <div class="color-option" style="background: #2d3436;" title="Shadow Black"></div>
+                <div class="color-option" style="background: #00b894;" title="Emerald Green"></div>
+                <div class="color-option" style="background: #fdcb6e;" title="Gold"></div>
+                <div class="color-option" style="background: #0984e3;" title="Ice Blue"></div>
+                <div class="color-option" style="background: #dfe6e9;" title="Silver"></div>
+              </div>
+            </div>
+
+            <!-- Size -->
+            <div class="form-group">
+              <label>Size</label>
+              <div class="size-options">
+                <div class="size-option" data-multiplier="0.7">Small (10cm)</div>
+                <div class="size-option selected" data-multiplier="1">Medium (15cm)</div>
+                <div class="size-option" data-multiplier="1.5">Large (22cm)</div>
+                <div class="size-option" data-multiplier="2.5">XL (30cm)</div>
+              </div>
+            </div>
+
+            <!-- Material -->
+            <div class="form-group">
+              <label>Material</label>
+              <div class="material-options">
+                <div class="material-option selected" data-extra="0">
+                  <div class="material-name">PLA Standard</div>
+                  <div class="material-price">Included</div>
+                </div>
+                <div class="material-option" data-extra="8">
+                  <div class="material-name">PETG Premium</div>
+                  <div class="material-price">+$8.00</div>
+                </div>
+                <div class="material-option" data-extra="15">
+                  <div class="material-name">Resin HD</div>
+                  <div class="material-price">+$15.00</div>
+                </div>
+                <div class="material-option" data-extra="25">
+                  <div class="material-name">Nylon Pro</div>
+                  <div class="material-price">+$25.00</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Custom Text -->
+            <div class="form-group">
+              <label>Custom Engraving (Optional)</label>
+              <input type="text" class="form-control" placeholder="e.g. 'To my brave knight — Dad'" maxlength="50">
+              <div class="hint">Max 50 characters. Engraved on the base of the model.</div>
+            </div>
+
+            <!-- Special Instructions -->
+            <div class="form-group">
+              <label>Special Instructions (Optional)</label>
+              <textarea class="form-control" placeholder="Any specific requests for your print..."></textarea>
+            </div>
+
+            <!-- Quantity -->
+            <div class="form-group">
+              <label>Quantity</label>
+              <div class="quantity-control">
+                <button class="qty-minus">−</button>
+                <input type="number" value="1" min="1" max="99">
+                <button class="qty-plus">+</button>
+              </div>
+            </div>
+
+            <!-- Price Summary -->
+            <div class="price-summary">
+              <div class="price-row">
+                <span>Base Price</span>
+                <span id="displayBasePrice">$34.99</span>
+              </div>
+              <div class="price-row">
+                <span>Material</span>
+                <span id="displayMaterialPrice">+$0.00</span>
+              </div>
+              <div class="price-row">
+                <span>Size Modifier</span>
+                <span id="displaySizePrice">x1</span>
+              </div>
+              <div class="price-row total">
+                <span>Total</span>
+                <span class="price-val" id="displayTotal">$34.99</span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+              <a href="cart.html" class="btn btn-accent btn-lg" style="flex: 1;">Add to Cart</a>
+              <a href="checkout.html" class="btn btn-primary btn-lg" style="flex: 1;">Buy Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Products -->
+      <div style="margin-top: 80px;">
+        <h2 style="font-size: 1.6rem; margin-bottom: 32px;">You Might Also Like</h2>
+        <div class="products-grid">
+          <a href="product.html" class="product-card">
+            <div class="product-image" style="background: linear-gradient(135deg, #fab1a0, #e17055);">🦁</div>
+            <div class="product-details">
+              <h3>Low-Poly Lion</h3>
+              <div class="product-meta"><span class="stars">★★★★★</span> <span>(94)</span></div>
+              <div class="price"><span class="price-from">from </span>$39.99</div>
+            </div>
+          </a>
+          <a href="product.html" class="product-card">
+            <div class="product-image" style="background: linear-gradient(135deg, #74b9ff, #0984e3);">🚀</div>
+            <div class="product-details">
+              <h3>Retro Rocket Ship</h3>
+              <div class="product-meta"><span class="stars">★★★★★</span> <span>(156)</span></div>
+              <div class="price"><span class="price-from">from </span>$29.99</div>
+            </div>
+          </a>
+          <a href="product.html" class="product-card">
+            <div class="product-image" style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e);">♟️</div>
+            <div class="product-details">
+              <h3>Custom Chess Set</h3>
+              <div class="product-meta"><span class="stars">★★★★★</span> <span>(185)</span></div>
+              <div class="price"><span class="price-from">from </span>$59.99</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">Print<span>3D</span></div>
+          <p>Premium custom 3D printing service.</p>
+        </div>
+        <div>
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="browse.html">All Models</a></li>
+            <li><a href="custom.html">Custom Order</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Centre</a></li>
+            <li><a href="#">Shipping</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Print3D. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
