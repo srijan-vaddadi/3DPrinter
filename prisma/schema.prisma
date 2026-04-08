@@ -21,6 +21,8 @@ model User {
   sessions  Session[]
   cartItems CartItem[]
   orders    Order[]
+  wishlist  WishlistItem[]
+  reviews   Review[]
 }
 
 // NextAuth required models
@@ -81,6 +83,8 @@ model Product {
   materials  ProductMaterial[]
   cartItems  CartItem[]
   orderItems OrderItem[]
+  wishlist   WishlistItem[]
+  reviews    Review[]
 }
 
 model ProductColor {
@@ -164,4 +168,33 @@ model OrderItem {
 
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+// Wishlist
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+// Reviews
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
 }

@@ -6,6 +6,8 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get('category');
   const featured = searchParams.get('featured');
   const sort = searchParams.get('sort');
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+  const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '9', 10)));
 
   const where: Record<string, unknown> = {};
   if (category && category !== 'all') where.category = category;
@@ -17,15 +19,25 @@ export async function GET(request: NextRequest) {
   if (sort === 'rating') orderBy = { rating: 'desc' };
   if (sort === 'popular') orderBy = { reviewCount: 'desc' };
 
-  const products = await prisma.product.findMany({
-    where,
-    orderBy,
-    include: {
-      colors: true,
-      sizes: true,
-      materials: true,
-    },
-  });
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      orderBy,
+      skip: (page - 1) * limit,
+      take: limit,
+      include: {
+        colors: true,
+        sizes: true,
+        materials: true,
+      },
+    }),
+    prisma.product.count({ where }),
+  ]);
 
-  return NextResponse.json(products);
+  return NextResponse.json({
+    products,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+  });
 }

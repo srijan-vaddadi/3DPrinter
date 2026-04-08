@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ReviewSection from '@/components/ReviewSection';
 
 interface ProductColor {
   id: string;
@@ -445,6 +446,13 @@ export default function ProductPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Reviews */}
+      <section className="py-16 bg-white">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <ReviewSection productId={id as string} />
         </div>
       </section>
 

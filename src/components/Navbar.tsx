@@ -153,8 +153,11 @@ export default function Navbar() {
                     <Link href="/orders" className="block px-4 py-2 text-sm text-dark hover:bg-light transition-colors" onClick={() => setDropdownOpen(false)}>
                       My Orders
                     </Link>
-                    <Link href="#" className="block px-4 py-2 text-sm text-dark hover:bg-light transition-colors" onClick={() => setDropdownOpen(false)}>
-                      Settings
+                    <Link href="/wishlist" className="block px-4 py-2 text-sm text-dark hover:bg-light transition-colors" onClick={() => setDropdownOpen(false)}>
+                      Wishlist
+                    </Link>
+                    <Link href="/profile" className="block px-4 py-2 text-sm text-dark hover:bg-light transition-colors" onClick={() => setDropdownOpen(false)}>
+                      Profile
                     </Link>
                     <button
                       onClick={() => signOut({ callbackUrl: '/' })}

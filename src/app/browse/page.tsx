@@ -54,35 +54,37 @@ export default function BrowsePage() {
   const [sortBy, setSortBy] = useState('popular');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const fetchProducts = async (pageNum: number, append = false) => {
+    if (!append) setLoading(true);
+    else setLoadingMore(true);
+    try {
+      const params = new URLSearchParams();
+      const category = filterCategoryMap[activeFilter];
+      if (category) params.set('category', category);
+      const sort = sortValueMap[sortBy];
+      if (sort) params.set('sort', sort);
+      params.set('page', String(pageNum));
+      params.set('limit', '9');
+      const res = await fetch(`/api/products?${params.toString()}`);
+      if (!res.ok) throw new Error('Failed to fetch');
+      const data = await res.json();
+      setProducts(prev => append ? [...prev, ...data.products] : data.products);
+      setTotalPages(data.totalPages);
+      setPage(data.page);
+    } catch {
+      if (!append) setProducts([]);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const params = new URLSearchParams();
-        const category = filterCategoryMap[activeFilter];
-        if (category) {
-          params.set('category', category);
-        }
-        const sort = sortValueMap[sortBy];
-        if (sort) {
-          params.set('sort', sort);
-        }
-        const query = params.toString();
-        const url = `/api/products${query ? `?${query}` : ''}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Failed to fetch products');
-        const data = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
+    fetchProducts(1);
   }, [activeFilter, sortBy]);
 
   return (
@@ -186,10 +188,14 @@ export default function BrowsePage() {
           )}
 
           {/* Load More */}
-          {!loading && products.length > 0 && (
+          {!loading && page < totalPages && (
             <div className="text-center mt-12">
-              <button className="px-10 py-3.5 rounded-xl font-semibold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all">
-                Load More Models
+              <button
+                onClick={() => fetchProducts(page + 1, true)}
+                disabled={loadingMore}
+                className="px-10 py-3.5 rounded-xl font-semibold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-50 cursor-pointer bg-transparent"
+              >
+                {loadingMore ? 'Loading...' : 'Load More Models'}
               </button>
             </div>
           )}
