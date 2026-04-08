@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PageHeader from '@/components/PageHeader';
@@ -39,6 +39,30 @@ export default function CustomPage() {
   const [selectedColor, setSelectedColor] = useState('#FFFFFF');
   const [selectedQuality, setSelectedQuality] = useState('Standard');
   const [selectedInfill, setSelectedInfill] = useState('20%');
+  const [uploadedFile, setUploadedFile] = useState<{ name: string; size: number; url: string } | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUpload = async (file: File) => {
+    setUploading(true);
+    setUploadError('');
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) { setUploadError(data.error); return; }
+      setUploadedFile({ name: data.fileName, size: data.size, url: data.url });
+    } catch { setUploadError('Upload failed. Please try again.'); }
+    finally { setUploading(false); }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleUpload(file);
+  };
 
   return (
     <>
@@ -52,26 +76,43 @@ export default function CustomPage() {
             <div className="space-y-6">
               {/* Upload Area */}
               <div className="bg-white rounded-2xl p-8 shadow-sm">
-                <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-primary transition-colors cursor-pointer">
-                  <svg
-                    className="w-16 h-16 text-gray mx-auto mb-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                    />
-                  </svg>
-                  <h3 className="text-lg font-semibold text-dark mb-2">Upload Your 3D Model</h3>
-                  <p className="text-gray text-sm">
-                    Supported formats: STL, OBJ, 3MF, STEP
-                  </p>
-                  <p className="text-gray text-xs mt-1">Max file size: 100MB</p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".stl,.obj,.3mf,.step,.stp"
+                  className="hidden"
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUpload(f); }}
+                />
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  onDrop={handleDrop}
+                  onDragOver={(e) => e.preventDefault()}
+                  className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-primary transition-colors cursor-pointer"
+                >
+                  {uploading ? (
+                    <>
+                      <div className="w-12 h-12 border-4 border-gray-200 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+                      <p className="text-dark font-semibold">Uploading...</p>
+                    </>
+                  ) : uploadedFile ? (
+                    <>
+                      <div className="text-5xl mb-4">✅</div>
+                      <h3 className="text-lg font-semibold text-dark mb-1">{uploadedFile.name}</h3>
+                      <p className="text-gray text-sm">{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB uploaded</p>
+                      <p className="text-primary text-sm mt-2 font-medium">Click to replace</p>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-16 h-16 text-gray mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                      <h3 className="text-lg font-semibold text-dark mb-2">Upload Your 3D Model</h3>
+                      <p className="text-gray text-sm">Drag & drop or click to browse</p>
+                      <p className="text-gray text-xs mt-1">STL, OBJ, 3MF, STEP &middot; Max 100MB</p>
+                    </>
+                  )}
                 </div>
+                {uploadError && <p className="text-red-500 text-sm mt-3">{uploadError}</p>}
               </div>
 
               {/* Preview Box */}

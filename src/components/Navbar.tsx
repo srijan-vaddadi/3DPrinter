@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -17,6 +17,13 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetch('/api/cart').then(r => r.json()).then(d => setCartCount(d.count || 0)).catch(() => {});
+    }
+  }, [status]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-dark/95 backdrop-blur-md border-b border-white/5">
@@ -101,9 +108,11 @@ export default function Navbar() {
 
           <Link href="/cart" className="text-white/70 hover:text-white transition-colors flex items-center gap-1.5 text-sm">
             <span>🛒</span>
-            <span className="bg-accent text-dark text-[0.7rem] w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold">
-              2
-            </span>
+            {cartCount > 0 && (
+              <span className="bg-accent text-dark text-[0.7rem] w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold">
+                {cartCount}
+              </span>
+            )}
           </Link>
         </div>
 

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { prisma } from '@/lib/db';
 
 const categories = [
   { emoji: '🧙‍♂️', name: 'Figurines & Characters', desc: 'Custom action figures, game characters, and miniatures.', count: '420+ designs', bg: 'from-[#a29bfe] to-[#6c5ce7]' },
@@ -11,12 +12,10 @@ const categories = [
   { emoji: '📤', name: 'Upload Your Own', desc: 'Have a 3D file? Upload it and we\'ll print it for you.', count: 'Unlimited possibilities', bg: 'from-[#636e72] to-[#2d3436]', href: '/custom' },
 ];
 
-const featured = [
-  { emoji: '🐉', name: 'Dragon Guardian Figurine', stars: '★★★★★', reviews: 128, price: 34.99, bg: 'from-[#a29bfe] to-[#6c5ce7]', badge: 'Popular' },
-  { emoji: '🌿', name: 'Geometric Plant Pot', stars: '★★★★☆', reviews: 89, price: 19.99, bg: 'from-[#55efc4] to-[#00b894]' },
-  { emoji: '🏰', name: 'Medieval Castle Model', stars: '★★★★★', reviews: 64, price: 49.99, bg: 'from-[#fdcb6e] to-[#e17055]', badge: 'New' },
-  { emoji: '💍', name: 'Custom Name Ring', stars: '★★★★★', reviews: 203, price: 24.99, bg: 'from-[#fd79a8] to-[#e84393]' },
-];
+function ratingToStars(rating: number): string {
+  const full = Math.round(rating);
+  return '★'.repeat(full) + '☆'.repeat(5 - full);
+}
 
 const testimonials = [
   { text: 'The dragon figurine I ordered exceeded my expectations. The detail is incredible, and the personalised name plate was a perfect touch. Will definitely order again!', name: 'Sarah M.', role: 'Figurine Collector', initial: 'S', stars: '★★★★★' },
@@ -24,7 +23,13 @@ const testimonials = [
   { text: 'Ordered custom chess pieces as a gift. They were beautifully made and arrived on time. The personalisation options are fantastic — love choosing materials!', name: 'Aisha R.', role: 'Gift Buyer', initial: 'A', stars: '★★★★☆' },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const featured = await prisma.product.findMany({
+    where: { featured: true },
+    include: { colors: true, sizes: true, materials: true },
+    take: 4,
+  });
+
   return (
     <>
       <Navbar />
@@ -134,8 +139,8 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
             {featured.map((p) => (
-              <Link key={p.name} href="/product" className="bg-white rounded-xl overflow-hidden shadow-md hover:-translate-y-1.5 hover:shadow-lg transition-all">
-                <div className={`h-[240px] bg-gradient-to-br ${p.bg} flex items-center justify-center text-7xl relative`}>
+              <Link key={p.id} href={`/product/${p.id}`} className="bg-white rounded-xl overflow-hidden shadow-md hover:-translate-y-1.5 hover:shadow-lg transition-all">
+                <div className={`h-[240px] bg-gradient-to-br ${p.gradient} flex items-center justify-center text-7xl relative`}>
                   {p.emoji}
                   {p.badge && (
                     <span className="absolute top-3 left-3 bg-accent text-dark px-3 py-1 rounded-full text-xs font-bold">{p.badge}</span>
@@ -144,11 +149,11 @@ export default function Home() {
                 <div className="p-5">
                   <h3 className="font-bold mb-1.5">{p.name}</h3>
                   <div className="flex items-center gap-2 mb-2 text-sm text-gray">
-                    <span className="text-yellow-400">{p.stars}</span>
-                    <span>({p.reviews} reviews)</span>
+                    <span className="text-yellow-400">{ratingToStars(p.rating)}</span>
+                    <span>({p.reviewCount} reviews)</span>
                   </div>
                   <div className="text-xl font-bold text-primary">
-                    <span className="text-sm font-normal text-gray">from </span>${p.price}
+                    <span className="text-sm font-normal text-gray">from </span>${p.basePrice}
                   </div>
                 </div>
               </Link>

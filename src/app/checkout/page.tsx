@@ -1,9 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+
+interface CartProduct {
+  id: string;
+  name: string;
+  emoji: string;
+  gradient: string;
+  basePrice: number;
+}
+
+interface CartItemData {
+  id: string;
+  quantity: number;
+  color: string | null;
+  size: string | null;
+  material: string | null;
+  engraving: string | null;
+  product: CartProduct;
+}
 
 const steps = [
   { label: 'Cart', completed: true },
@@ -12,10 +30,81 @@ const steps = [
   { label: 'Confirm', completed: false },
 ];
 
-type PaymentMethod = 'credit-card' | 'paypal' | 'apple-pay';
-
 export default function CheckoutPage() {
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit-card');
+  const { status } = useSession();
+  const [items, setItems] = useState<CartItemData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  const [shipping, setShipping] = useState({
+    name: '',
+    address: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: 'US',
+  });
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetch('/api/cart')
+        .then((res) => res.json())
+        .then((data) => { setItems(data.items || []); setLoading(false); })
+        .catch(() => setLoading(false));
+    } else if (status === 'unauthenticated') {
+      setLoading(false);
+    }
+  }, [status]);
+
+  const subtotal = items.reduce((sum, item) => sum + item.product.basePrice * item.quantity, 0);
+  const shippingCost = items.length > 0 ? 9.99 : 0;
+  const tax = parseFloat((subtotal * 0.1).toFixed(2));
+  const total = parseFloat((subtotal + shippingCost + tax).toFixed(2));
+
+  const handlePlaceOrder = async () => {
+    setError('');
+    if (!shipping.name || !shipping.address || !shipping.city || !shipping.state || !shipping.zip) {
+      setError('Please fill in all required shipping fields.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shipping }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Something went wrong. Please try again.');
+        setSubmitting(false);
+        return;
+      }
+      window.location.href = data.url;
+    } catch {
+      setError('Something went wrong. Please try again.');
+      setSubmitting(false);
+    }
+  };
+
+  if (status === 'unauthenticated') {
+    return (
+      <div className="min-h-screen bg-dark text-white flex flex-col">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-5xl mb-4">🔒</p>
+            <h1 className="text-2xl font-bold mb-2">Sign in required</h1>
+            <p className="text-gray mb-6">Please sign in to proceed with checkout</p>
+            <Link href="/signin" className="inline-block bg-primary hover:bg-primary/80 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+              Sign In
+            </Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-dark text-white flex flex-col">
@@ -61,286 +150,181 @@ export default function CheckoutPage() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Forms */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Contact Information */}
-            <section className="bg-dark-light rounded-2xl p-6 border border-white/5">
-              <h2 className="text-xl font-bold mb-5 flex items-center gap-2">
-                <span className="w-7 h-7 rounded-full bg-primary/20 text-primary text-sm flex items-center justify-center font-bold">
-                  1
-                </span>
-                Contact Information
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-white/70 mb-1.5 block">Email Address</label>
-                  <input
-                    type="email"
-                    placeholder="you@example.com"
-                    className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-white/70 mb-1.5 block">Phone Number</label>
-                  <input
-                    type="tel"
-                    placeholder="+1 (555) 000-0000"
-                    className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* Shipping Address */}
-            <section className="bg-dark-light rounded-2xl p-6 border border-white/5">
-              <h2 className="text-xl font-bold mb-5 flex items-center gap-2">
-                <span className="w-7 h-7 rounded-full bg-primary/20 text-primary text-sm flex items-center justify-center font-bold">
-                  2
-                </span>
-                Shipping Address
-              </h2>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm text-white/70 mb-1.5 block">First Name</label>
-                    <input
-                      type="text"
-                      placeholder="John"
-                      className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-white/70 mb-1.5 block">Last Name</label>
-                    <input
-                      type="text"
-                      placeholder="Doe"
-                      className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm text-white/70 mb-1.5 block">Street Address</label>
-                  <input
-                    type="text"
-                    placeholder="123 Main Street"
-                    className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-white/70 mb-1.5 block">
-                    Apartment, suite, etc. (optional)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Apt 4B"
-                    className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                  />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm text-white/70 mb-1.5 block">City</label>
-                    <input
-                      type="text"
-                      placeholder="New York"
-                      className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-white/70 mb-1.5 block">State / Province</label>
-                    <input
-                      type="text"
-                      placeholder="NY"
-                      className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm text-white/70 mb-1.5 block">ZIP / Postal Code</label>
-                    <input
-                      type="text"
-                      placeholder="10001"
-                      className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-white/70 mb-1.5 block">Country</label>
-                    <select className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors appearance-none">
-                      <option value="US">United States</option>
-                      <option value="CA">Canada</option>
-                      <option value="GB">United Kingdom</option>
-                      <option value="AU">Australia</option>
-                      <option value="DE">Germany</option>
-                      <option value="FR">France</option>
-                      <option value="JP">Japan</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Payment Method */}
-            <section className="bg-dark-light rounded-2xl p-6 border border-white/5">
-              <h2 className="text-xl font-bold mb-5 flex items-center gap-2">
-                <span className="w-7 h-7 rounded-full bg-primary/20 text-primary text-sm flex items-center justify-center font-bold">
-                  3
-                </span>
-                Payment Method
-              </h2>
-
-              {/* Payment Method Buttons */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                <button
-                  onClick={() => setPaymentMethod('credit-card')}
-                  className={`py-3 px-4 rounded-xl text-sm font-medium border-2 transition-all ${
-                    paymentMethod === 'credit-card'
-                      ? 'border-primary bg-primary/10 text-white'
-                      : 'border-white/10 bg-dark text-gray hover:border-white/20'
-                  }`}
-                >
-                  💳 Credit Card
-                </button>
-                <button
-                  onClick={() => setPaymentMethod('paypal')}
-                  className={`py-3 px-4 rounded-xl text-sm font-medium border-2 transition-all ${
-                    paymentMethod === 'paypal'
-                      ? 'border-primary bg-primary/10 text-white'
-                      : 'border-white/10 bg-dark text-gray hover:border-white/20'
-                  }`}
-                >
-                  🅿️ PayPal
-                </button>
-                <button
-                  onClick={() => setPaymentMethod('apple-pay')}
-                  className={`py-3 px-4 rounded-xl text-sm font-medium border-2 transition-all ${
-                    paymentMethod === 'apple-pay'
-                      ? 'border-primary bg-primary/10 text-white'
-                      : 'border-white/10 bg-dark text-gray hover:border-white/20'
-                  }`}
-                >
-                   Apple Pay
-                </button>
-              </div>
-
-              {/* Credit Card Fields */}
-              {paymentMethod === 'credit-card' && (
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="w-10 h-10 border-4 border-white/20 border-t-primary rounded-full animate-spin" />
+          </div>
+        ) : items.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-5xl mb-4">🛒</p>
+            <p className="text-xl text-gray mb-6">Your cart is empty</p>
+            <Link href="/browse" className="inline-block bg-primary hover:bg-primary/80 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+              Browse Products
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column - Shipping Form */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Shipping Address */}
+              <section className="bg-dark-light rounded-2xl p-6 border border-white/5">
+                <h2 className="text-xl font-bold mb-5 flex items-center gap-2">
+                  <span className="w-7 h-7 rounded-full bg-primary/20 text-primary text-sm flex items-center justify-center font-bold">
+                    1
+                  </span>
+                  Shipping Address
+                </h2>
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm text-white/70 mb-1.5 block">Card Number</label>
+                    <label className="text-sm text-white/70 mb-1.5 block">Full Name</label>
                     <input
                       type="text"
-                      placeholder="1234 5678 9012 3456"
-                      className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm text-white/70 mb-1.5 block">Expiry Date</label>
-                      <input
-                        type="text"
-                        placeholder="MM / YY"
-                        className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm text-white/70 mb-1.5 block">CVV</label>
-                      <input
-                        type="text"
-                        placeholder="123"
-                        className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-sm text-white/70 mb-1.5 block">Name on Card</label>
-                    <input
-                      type="text"
+                      value={shipping.name}
+                      onChange={(e) => setShipping({ ...shipping, name: e.target.value })}
                       placeholder="John Doe"
                       className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
                     />
                   </div>
+                  <div>
+                    <label className="text-sm text-white/70 mb-1.5 block">Street Address</label>
+                    <input
+                      type="text"
+                      value={shipping.address}
+                      onChange={(e) => setShipping({ ...shipping, address: e.target.value })}
+                      placeholder="123 Main Street"
+                      className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm text-white/70 mb-1.5 block">City</label>
+                      <input
+                        type="text"
+                        value={shipping.city}
+                        onChange={(e) => setShipping({ ...shipping, city: e.target.value })}
+                        placeholder="New York"
+                        className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-white/70 mb-1.5 block">State / Province</label>
+                      <input
+                        type="text"
+                        value={shipping.state}
+                        onChange={(e) => setShipping({ ...shipping, state: e.target.value })}
+                        placeholder="NY"
+                        className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm text-white/70 mb-1.5 block">ZIP / Postal Code</label>
+                      <input
+                        type="text"
+                        value={shipping.zip}
+                        onChange={(e) => setShipping({ ...shipping, zip: e.target.value })}
+                        placeholder="10001"
+                        className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-white/70 mb-1.5 block">Country</label>
+                      <select
+                        value={shipping.country}
+                        onChange={(e) => setShipping({ ...shipping, country: e.target.value })}
+                        className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-colors appearance-none"
+                      >
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="JP">Japan</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3 text-sm text-red-400">
+                  {error}
                 </div>
               )}
 
-              {paymentMethod === 'paypal' && (
-                <div className="text-center py-8 text-gray">
-                  <p className="text-3xl mb-3">🅿️</p>
-                  <p className="text-sm">You will be redirected to PayPal to complete your payment.</p>
+              {/* Place Order Button */}
+              <button
+                onClick={handlePlaceOrder}
+                disabled={submitting}
+                className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 disabled:opacity-60 text-white font-bold py-4 rounded-xl transition-opacity flex items-center justify-center gap-2 text-lg cursor-pointer disabled:cursor-not-allowed border-none"
+              >
+                {submitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>Place Order &mdash; ${total.toFixed(2)}</>
+                )}
+              </button>
+
+              <p className="text-xs text-gray text-center flex items-center justify-center gap-1.5">
+                <span>🔒</span> Secure checkout powered by Stripe
+              </p>
+            </div>
+
+            {/* Right Column - Order Summary Sidebar */}
+            <div className="lg:col-span-1">
+              <div className="bg-dark-light rounded-2xl p-6 border border-white/5 sticky top-28">
+                <h2 className="text-xl font-bold mb-5">Order Summary</h2>
+
+                {/* Cart Item Cards */}
+                <div className="space-y-3 mb-6">
+                  {items.map((item) => {
+                    const details = [item.color, item.size, item.material].filter(Boolean).join(' / ');
+                    return (
+                      <div key={item.id} className="flex items-center gap-3 bg-dark/50 rounded-xl p-3">
+                        <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${item.product.gradient} flex items-center justify-center text-xl flex-shrink-0`}>
+                          {item.product.emoji}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{item.product.name}</p>
+                          {details && <p className="text-xs text-gray truncate">{details}</p>}
+                          {item.engraving && <p className="text-xs text-gray italic truncate">"{item.engraving}"</p>}
+                          <p className="text-xs text-gray">Qty: {item.quantity}</p>
+                        </div>
+                        <p className="text-sm font-bold text-white/90">${(item.product.basePrice * item.quantity).toFixed(2)}</p>
+                      </div>
+                    );
+                  })}
                 </div>
-              )}
 
-              {paymentMethod === 'apple-pay' && (
-                <div className="text-center py-8 text-gray">
-                  <p className="text-3xl mb-3"></p>
-                  <p className="text-sm">Complete your payment using Apple Pay.</p>
-                </div>
-              )}
-            </section>
-
-            {/* Place Order Button */}
-            <Link
-              href="/confirmation"
-              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-bold py-4 rounded-xl transition-opacity flex items-center justify-center gap-2 text-lg block text-center"
-            >
-              Place Order &mdash; $140.85
-            </Link>
-          </div>
-
-          {/* Right Column - Order Summary Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="bg-dark-light rounded-2xl p-6 border border-white/5 sticky top-28">
-              <h2 className="text-xl font-bold mb-5">Order Summary</h2>
-
-              {/* Mini Item Cards */}
-              <div className="space-y-3 mb-6">
-                {/* Dragon Figurine */}
-                <div className="flex items-center gap-3 bg-dark/50 rounded-xl p-3">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-purple-400 flex items-center justify-center text-xl flex-shrink-0">
-                    🐉
+                {/* Totals */}
+                <div className="space-y-3 text-sm border-t border-white/10 pt-4">
+                  <div className="flex justify-between text-white/70">
+                    <span>Subtotal</span>
+                    <span>${subtotal.toFixed(2)}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">Dragon Guardian Figurine</p>
-                    <p className="text-xs text-gray">Qty: 1</p>
+                  <div className="flex justify-between text-white/70">
+                    <span>Shipping</span>
+                    <span>${shippingCost.toFixed(2)}</span>
                   </div>
-                  <p className="text-sm font-bold text-white/90">$34.99</p>
-                </div>
-
-                {/* Plant Pot */}
-                <div className="flex items-center gap-3 bg-dark/50 rounded-xl p-3">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent to-emerald-400 flex items-center justify-center text-xl flex-shrink-0">
-                    🌿
+                  <div className="flex justify-between text-white/70">
+                    <span>Tax</span>
+                    <span>${tax.toFixed(2)}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">Geometric Plant Pot</p>
-                    <p className="text-xs text-gray">Qty: 2</p>
+                  <div className="border-t border-white/10 pt-3 flex justify-between text-base font-bold">
+                    <span>Total</span>
+                    <span className="text-primary">${total.toFixed(2)}</span>
                   </div>
-                  <p className="text-sm font-bold text-white/90">$83.97</p>
-                </div>
-              </div>
-
-              {/* Totals */}
-              <div className="space-y-3 text-sm border-t border-white/10 pt-4">
-                <div className="flex justify-between text-white/70">
-                  <span>Subtotal</span>
-                  <span>$118.96</span>
-                </div>
-                <div className="flex justify-between text-white/70">
-                  <span>Shipping</span>
-                  <span>$9.99</span>
-                </div>
-                <div className="flex justify-between text-white/70">
-                  <span>Tax</span>
-                  <span>$11.90</span>
-                </div>
-                <div className="border-t border-white/10 pt-3 flex justify-between text-base font-bold">
-                  <span>Total</span>
-                  <span className="text-primary">$140.85</span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </main>
 
       {/* Minimal Footer */}
