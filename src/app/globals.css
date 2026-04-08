@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #6c5ce7;
+  --color-primary-dark: #5a4bd1;
+  --color-accent: #00cec9;
+  --color-dark: #1e1e2e;
+  --color-dark-light: #2d2d44;
+  --color-gray: #636e72;
+  --color-light: #f5f6fa;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes rotate3d {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
