@@ -1,7 +1,14 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
+import { auth } from '@/auth';
+import { isAdmin } from '@/lib/admin';
 
 export default async function AdminDashboard() {
+  const session = await auth();
+  if (!session?.user?.email || !(await isAdmin(session.user.email))) {
+    redirect('/');
+  }
   const [totalProducts, totalOrders, totalUsers, revenueResult, recentOrders] =
     await Promise.all([
       prisma.product.count(),

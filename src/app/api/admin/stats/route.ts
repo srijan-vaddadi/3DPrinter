@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { requireAdmin } from '@/lib/admin';
 
 export async function GET() {
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   try {
     const [totalProducts, totalOrders, totalUsers, revenueResult, recentOrders] =
       await Promise.all([

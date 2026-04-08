@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { requireAdmin } from '@/lib/admin';
 
 export async function GET() {
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   try {
     const products = await prisma.product.findMany({
       orderBy: { createdAt: 'desc' },
@@ -23,6 +27,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const { error: authError } = await requireAdmin();
+  if (authError) return authError;
+
   try {
     const body = await request.json();
     const { name, description, basePrice, emoji, gradient, category, badge, featured } = body;

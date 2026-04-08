@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -12,18 +12,50 @@ const navItems = [
   { href: '/about', label: 'About' },
 ];
 
+interface SearchResult {
+  id: string;
+  name: string;
+  emoji: string;
+  basePrice: number;
+  category: string;
+}
+
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (status === 'authenticated') {
       fetch('/api/cart').then(r => r.json()).then(d => setCartCount(d.count || 0)).catch(() => {});
     }
   }, [status]);
+
+  useEffect(() => {
+    if (searchQuery.length < 2) { setSearchResults([]); return; }
+    const timer = setTimeout(() => {
+      fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`)
+        .then(r => r.json())
+        .then(d => setSearchResults(d))
+        .catch(() => {});
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchOpen(false);
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-dark/95 backdrop-blur-md border-b border-white/5">
@@ -54,6 +86,36 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
+        </div>
+
+        {/* Search */}
+        <div className="hidden md:block relative" ref={searchRef}>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setSearchOpen(true); }}
+            onFocus={() => setSearchOpen(true)}
+            placeholder="Search models..."
+            className="w-48 lg:w-64 px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-white text-sm placeholder-white/40 focus:outline-none focus:border-accent/50 focus:bg-white/15 transition-all"
+          />
+          {searchOpen && searchResults.length > 0 && (
+            <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-xl shadow-lg border border-gray/10 overflow-hidden z-50">
+              {searchResults.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => { router.push(`/product/${p.id}`); setSearchOpen(false); setSearchQuery(''); }}
+                  className="w-full px-4 py-3 flex items-center gap-3 hover:bg-light transition-colors text-left bg-transparent border-none cursor-pointer"
+                >
+                  <span className="text-xl">{p.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-dark truncate">{p.name}</p>
+                    <p className="text-xs text-gray capitalize">{p.category}</p>
+                  </div>
+                  <span className="text-sm font-semibold text-primary">${p.basePrice}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Desktop Actions */}
@@ -88,7 +150,7 @@ export default function Navbar() {
                       <p className="text-sm font-semibold text-dark truncate">{session.user.name}</p>
                       <p className="text-xs text-gray truncate">{session.user.email}</p>
                     </div>
-                    <Link href="#" className="block px-4 py-2 text-sm text-dark hover:bg-light transition-colors" onClick={() => setDropdownOpen(false)}>
+                    <Link href="/orders" className="block px-4 py-2 text-sm text-dark hover:bg-light transition-colors" onClick={() => setDropdownOpen(false)}>
                       My Orders
                     </Link>
                     <Link href="#" className="block px-4 py-2 text-sm text-dark hover:bg-light transition-colors" onClick={() => setDropdownOpen(false)}>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PageHeader from '@/components/PageHeader';
@@ -35,6 +36,8 @@ const qualities = [
 const infillOptions = ['10%', '20%', '50%', '100%'];
 
 export default function CustomPage() {
+  const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState('PLA');
   const [selectedColor, setSelectedColor] = useState('#FFFFFF');
   const [selectedQuality, setSelectedQuality] = useState('Standard');
@@ -308,11 +311,36 @@ export default function CustomPage() {
 
               {/* Action Buttons */}
               <div className="flex gap-4">
-                <button className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold py-4 rounded-xl transition-colors">
-                  Get Quote
-                </button>
-                <button className="flex-1 bg-accent hover:bg-accent/90 text-dark font-semibold py-4 rounded-xl transition-colors">
-                  Add to Cart
+                <button
+                  disabled={submitting}
+                  onClick={async () => {
+                    setSubmitting(true);
+                    const projectName = (document.getElementById('projectName') as HTMLInputElement)?.value;
+                    const quantity = parseInt((document.getElementById('quantity') as HTMLInputElement)?.value) || 1;
+                    const notes = (document.getElementById('notes') as HTMLTextAreaElement)?.value;
+                    const scale = (document.querySelector('select') as HTMLSelectElement)?.value || '100';
+                    const colorName = colors.find(c => c.value === selectedColor)?.name || selectedColor;
+
+                    const res = await fetch('/api/custom-order', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        projectName, material: selectedMaterial, color: colorName,
+                        quality: selectedQuality, infill: selectedInfill, scale,
+                        quantity, notes, fileName: uploadedFile?.name,
+                      }),
+                    });
+
+                    setSubmitting(false);
+                    if (res.ok) {
+                      router.push('/cart');
+                    } else if (res.status === 401) {
+                      router.push('/signin');
+                    }
+                  }}
+                  className="flex-1 bg-accent hover:bg-accent/90 text-dark font-semibold py-4 rounded-xl transition-colors disabled:opacity-50 cursor-pointer border-none"
+                >
+                  {submitting ? 'Adding...' : 'Add to Cart'}
                 </button>
               </div>
             </div>
